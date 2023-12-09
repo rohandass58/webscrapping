@@ -1,6 +1,5 @@
 import os
 import time
-import random
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
@@ -8,7 +7,6 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from fake_useragent import UserAgent
 
 # Get the current script directory
 script_directory = os.path.dirname(os.path.realpath(__file__))
@@ -27,9 +25,9 @@ options = Options()
 options.headless = True  # Run Firefox in headless mode
 options.add_argument("--disable-blink-features")
 options.add_argument("--disable-blink-features=AutomationControlled")
-ua = UserAgent()
-user_agent = ua.random
-options.add_argument(f"user-agent={user_agent}")
+options.add_argument(
+    "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+)
 options.add_argument("--window-size=1366,768")
 options.profile = firefox_profile
 
@@ -59,18 +57,11 @@ try:
             "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
         )
 
-        # Additional overrides
-        driver.execute_script(
-            "Object.defineProperty(navigator, 'plugins', {get: () => undefined})"
-        )
-        driver.execute_script(
-            "Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']})"
-        )
-
-        # Simulate human-like interaction with delays and random mouse movements
-        time.sleep(random.uniform(0.5, 1.5))
+        # Simulate mouse movement
         actions = ActionChains(driver)
-        actions.move_by_offset(random.randint(-5, 5), random.randint(-5, 5)).perform()
+        actions.move_by_offset(10, 20).perform()
+        time.sleep(1)
+        print("Simulate mouse movement")
 
         # Scroll down the page
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
